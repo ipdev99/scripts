@@ -26,8 +26,10 @@ DATE=$(date '+%Y%m%d')
 # UTCDATE=$(date -u '+%Y%m%d')
 
 # Set alternate final directory. Leave blank if not used.
-# # FINALDIR=
-# FINALDIR=/home/ip/ip/roms/$OS/$DATE/
+## # FINALDIR=
+## # FINALDIR=/home/ip/ip/roms/$OS/$DATE/
+ALTDIR=/home/ip/ip/roms
+FINALDIR=$ALTDIR/$OS/$DEVICE/$DATE/
 
 # Set logfile with date and time
 LOGFILE="$TDIR"/$(date '+%Y%m%d_%H%M')_"$DEVICE"_"$OS".log
@@ -38,22 +40,20 @@ LOGFILE="$TDIR"/$(date '+%Y%m%d_%H%M')_"$DEVICE"_"$OS".log
 
 # Set main functions
 
-make_sha256sum() {
-	sha256sum boot-$OTANAME.img > boot-$OTANAME.img.sha256;
-	sha256sum $OTANAME.zip > $OTANAME.zip.sha256;
-	# sha256sum recovery-$OTANAME.img > recovery-$OTANAME.img.sha256;
-}
-
 make_md5sum() {
 	md5sum boot-$OTANAME.img > boot-$OTANAME.img.md5sum;
 	# md5sum $OTANAME.zip > $OTANAME.zip.md5sum;
 	# md5sum recovery-$OTANAME.img > recovery-$OTANAME.img.md5sum;
 }
 
+make_sha256sum() {
+	sha256sum boot-$OTANAME.img > boot-$OTANAME.img.sha256;
+	sha256sum $OTANAME.zip > $OTANAME.zip.sha256;
+	# sha256sum recovery-$OTANAME.img > recovery-$OTANAME.img.sha256;
+}
+
 move_to_finaldir() {
-	if [ ! -d $FINALDIR ]; then
-		mkdir $FINALDIR;
-	fi;
+	[[ ! -d $FINALDIR ]] && mkdir -p $FINALDIR;
 	mv boot-$OTANAME.img $FINALDIR;
 	mv boot-$OTANAME.img.md5sum $FINALDIR;
 	mv boot-$OTANAME.img.sha256 $FINALDIR;
@@ -76,8 +76,8 @@ remove_previous_files() {
 }
 
 rename_files() {
-	mv boot.img boot-$OTANAME.img;
-	# mv recovery.img recovery-$OTANAME.img;
+	[ -f boot.img ] && mv boot.img boot-$OTANAME.img;
+	# [ -f recovery.img ] && mv recovery.img recovery-$OTANAME.img;
 }
 
 # Move old log file(s) into the xfiles directory
@@ -138,27 +138,14 @@ if [ "$BUILD" = "lineage" ]; then
 fi;
 
 # Change to out directory
-if [ -n "$OTANAME" ]; then
-	cd "$TDIR"/out/target/product/"$DEVICE"/;
-fi;
+[[ -n $OTANAME ]] && cd "$TDIR"/out/target/product/"$DEVICE"/;
 
 # Delete previous versions (if exist) that are named the same as the new version.
+# Rename new versions. Make md5sum and sha256sum files for boot, system and recovery.
 if [ -n "$OTANAME" ]; then
 	remove_previous_files;
-fi;
-
-# Rename new versions
-if [ -n "$OTANAME" ]; then
 	rename_files;
-fi;
-
-# Make md5sum files for boot and recovery.
-if [ -n "$OTANAME" ]; then
 	make_md5sum;
-fi;
-
-# Make sha256sum files for boot, system and recovery.
-if [ -n "$OTANAME" ]; then
 	make_sha256sum;
 fi;
 
