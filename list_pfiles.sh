@@ -142,6 +142,6 @@ echo "" >>$LOGFILE
 rm $prop_file;
 
 echo ""; echo " Done."; echo "";
-echo " New prop file saved as "$LOGFILE""; echo "";
+echo " New file saved as "$LOGFILE""; echo "";
 
 return 0; exit 0;
