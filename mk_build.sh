@@ -20,23 +20,20 @@
 # OS=l16
 
 # Set main variables
-
 TDIR=$(pwd)
-DATE=$(date '+%Y%m%d')
-# UTCDATE=$(date -u '+%Y%m%d')
+LOGDIR=$TDIR/xfiles/logs
 
-# Set alternate final directory. Leave blank if not used.
-## # FINALDIR=
-## # FINALDIR=/home/ip/ip/roms/$OS/$DATE/
+## DATE=$(date '+%Y%m%d')
+# Use UTC/GMT (-u) date
+DATE=$(date -u '+%Y%m%d')
+
+# Set alternate for final directory. Leave blank if not used.
+# ALTDIR=
 ALTDIR=/home/ip/ip/roms
-FINALDIR=$ALTDIR/$OS/$DEVICE/$DATE/
+# ALTDIR=/builds
 
-# Set logfile with date and time
-LOGFILE="$TDIR"/$(date '+%Y%m%d_%H%M')_"$DEVICE"_"$OS".log
-
-# # Set logfile using UTC/GMT (-u) date and time
-# LOGFILE="$TDIR"/$(date -u '+%Y%m%d_%H%M')_"$DEVICE"_"$OS".log
-
+# Set logfile using UTC/GMT (-u) date and time.
+LOGFILE="$LOGDIR"/$(date -u '+%Y%m%d_%H%M')_"$DEVICE"_"$OS".log
 
 # Set main functions
 
@@ -80,13 +77,12 @@ rename_files() {
 	# [ -f recovery.img ] && mv recovery.img recovery-$OTANAME.img;
 }
 
-# Move old log file(s) into the xfiles directory
-if [ -n "$(find -maxdepth 1 -name '*.log' | grep -m1 'log')" ]; then
-	if [ ! -d xfiles ]; then 
-		mkdir xfiles;
-	fi;
-	mv *.log xfiles/;
-fi;
+# Make Log directory if needed.
+[[ ! -d $LOGDIR ]] && mkdir -p $LOGDIR;
+
+# Set alternate final directory if used.
+## [[ -n $ALTDIR ]] && FINALDIR=$ALTDIR/$OS/$DATE/;
+[[ -n $ALTDIR ]] && FINALDIR=$ALTDIR/$OS/$DEVICE/$DATE/;
 
 # Start time elapsed.
 STE=$(date +%s)
@@ -167,7 +163,7 @@ echo ""
 echo ""; echo " Done."; echo "";
 
 if [ -n "$OTANAME" ] && [ -n "$FINALDIR" ]; then
-echo " New file(s) saved to "$FINALDIR""; echo "";
+	echo " New file(s) moved to "$FINALDIR""; echo "";
 fi;
 
 #
