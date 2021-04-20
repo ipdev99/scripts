@@ -63,13 +63,13 @@ move_to_finaldir() {
 }
 
 remove_previous_files() {
-	if [ -f boot-$OTANAME.img ]; then rm boot-$OTANAME.img; fi;
-	if [ -f boot-$OTANAME.img.md5sum ]; then rm boot-$OTANAME.img.md5sum; fi;
-	if [ -f boot-$OTANAME.img.sha256 ]; then rm boot-$OTANAME.img.sha256; fi;
-	if [ -f recovery-$OTANAME.img ]; then rm recovery-$OTANAME.img; fi;
-	if [ -f recovery-$OTANAME.img.md5sum ]; then rm recovery-$OTANAME.img.md5sum; fi;
-	if [ -f recovery-$OTANAME.img.sha256 ]; then rm recovery-$OTANAME.img.sha256; fi;
-	if [ -f $OTANAME.zip.sha256 ]; then rm $OTANAME.zip.sha256; fi;
+	[[ -f boot-$OTANAME.img ]] && rm boot-$OTANAME.img;
+	[[ -f boot-$OTANAME.img.md5sum ]] && rm boot-$OTANAME.img.md5sum;
+	[[ -f boot-$OTANAME.img.sha256 ]] && rm boot-$OTANAME.img.sha256;
+	[[ -f recovery-$OTANAME.img ]] && rm recovery-$OTANAME.img;
+	[[ -f recovery-$OTANAME.img.md5sum ]] && rm recovery-$OTANAME.img.md5sum;
+	[[ -f recovery-$OTANAME.img.sha256 ]] && rm recovery-$OTANAME.img.sha256;
+	[[ -f $OTANAME.zip.sha256 ]] && rm $OTANAME.zip.sha256;
 }
 
 rename_files() {
