@@ -10,14 +10,14 @@
 # https://wiki.lineageos.org/extracting_blobs_from_zips.html
 
 # If you have a lineage build directory, you can point extract and sdat2img to it.
-# Set $LBD to your lineage build directory.
+# Set "LBD" to your lineage build directory.
 
-# If you do not have a lineage build directory, you can clone lineage scripts into a directory.
-# Then set $LBD to your directory that you cloned the scripts into.
+# If you do not have a lineage build directory, you can clone the scripts into a directory.
+# Set "GCD" to the directory that you cloned the scripts into.
 #
 # You can also clone the lineage scripts into the same directory as the OTA/ROM zip file.
-
-# To clone the Lineage scrips directory to you current directory.
+#
+# To clone the scrips directory to you current directory.
 # git clone https://github.com/LineageOS/scripts
 # git clone https://github.com/xpirt/sdat2img
 
@@ -28,9 +28,16 @@ TDIR=$(pwd)
 # Set lineage build directory.
 LBD=/home/ip/build/l18
 
+# # Set git clone directory.
+# GCD=/home/ip/GitCloneTools
+
 # Use python scripts from lineage build directory (LBD).
 EXTRACT=$LBD/lineage/scripts/update-payload-extractor/extract.py
 SDAT2IMG=$LBD/tools/extract-utils/sdat2img.py
+
+# # Use python scripts from a git clone directory (GCD).
+# EXTRACT=$GCD/scripts/update-payload-extractor/extract.py
+# SDAT2IMG=$GCD/sdat2img/sdat2img.py
 
 # # Use python scripts cloned into the same directory as the zip file.
 # EXTRACT=$TDIR/scripts/update-payload-extractor/extract.py
