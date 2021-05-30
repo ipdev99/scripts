@@ -46,7 +46,7 @@ SDAT2IMG=$LBD/tools/extract-utils/sdat2img.py
 # Set main functions
 
 run_brotli(){
-	echo "Decompressing";
+	echo "Decompressing "$NAME;
 	for i in *.br; do
 		{
 			ii=$(printf "$i" | sed 's/.br//g');
@@ -63,10 +63,12 @@ run_extract(){
 	echo "Extracting payload from "$NAME;
 	python3 $EXTRACT payload.bin --output_dir $(pwd); # > /dev/null 2>&1;
 	rm payload.bin;
+	[[ -z "$(find -maxdepth 1 -name '*.img' | grep -m1 'img')" ]] && echo " - Failed";
+	[[ -n "$(find -maxdepth 1 -name '*.img' | grep -m1 'img')" ]] && echo " - Complete";
 }
 
 run_sdat2img(){
-	echo "Converting";
+	echo "Converting "$NAME;
 	for i in *.dat; do
 		{
 			ii=$(printf "$i" | cut -f1 -d '.');
