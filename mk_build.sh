@@ -146,9 +146,7 @@ if [ -n "$OTANAME" ]; then
 fi;
 
 # Move to an alternative final directory.
-if [ -n "$OTANAME" ] && [ -n "$FINALDIR" ]; then
-	move_to_finaldir;
-fi;
+[ -n "$OTANAME" -a -n "$FINALDIR" ] && move_to_finaldir;
 
 # End time elapsed.
 ETE=$(date +%s)
@@ -162,9 +160,8 @@ echo ""
 # Finish script
 echo ""; echo " Done."; echo "";
 
-if [ -n "$OTANAME" ] && [ -n "$FINALDIR" ]; then
-	echo " New file(s) moved to "$FINALDIR""; echo "";
-fi;
+# Note alternative final directory.
+[ -n "$OTANAME" -a -n "$FINALDIR" ] && echo " New file(s) moved to "$FINALDIR""; echo "";
 
 #
 exit 0;
