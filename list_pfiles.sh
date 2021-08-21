@@ -23,6 +23,11 @@ SCRIPT=list_pfiles.sh
 
 # Set main functions
 
+check_android_device() {
+	ANDROID=FALSE;
+	[ -f /system/bin/sh ] || [ -f /system/bin/toybox ] || [ -f /system/bin/toolbox ] && ANDROID=TRUE;
+}
+
 set_target_directory() {
 	if [ ! -f "$SCRIPT" ]; then
 		TDIR=$(lsof 2>/dev/null | grep -o '[^ ]*$' | grep -m1 "$SCRIPT" | sed 's/\/'"$SCRIPT"'//g');
@@ -31,25 +36,18 @@ set_target_directory() {
 }
 
 set_prop_file() {
-	if [ "$ANDROID" = "TRUE" ]; then
-		getprop | sed 's/\]: \[/=/g; s/\[//g; s/\]//g' > getprop.props
-		if [ -f getprop.props ]; then
-			prop_file=getprop.props
-		fi;
-	else
-		echo " This script needs to be run on an Android device. "
-		exit 0;
-	fi;
+	getprop | sed 's/\]: \[/=/g; s/\[//g; s/\]//g' > getprop.props;
+	[ -f getprop.props ] && prop_file=getprop.props;
 }
 
+# Determine if running on an Android device.
+check_android_device;
 
-# Determine if running on an Android device or MacOS/Linux.
-if [ -f /system/bin/sh ] || [ -f /system/bin/toybox ] || [ -f /system/bin/toolbox ]; then
-	# Android device
-	ANDROID=TRUE;
-else
-	# MacOS/Linux
-	ANDROID=FALSE;
+if [ "$ANDROID" = "FALSE" ]; then
+	echo "";
+	echo " This script needs to be run on an Android device. ";
+	echo "";
+	exit 0;
 fi;
 
 # Reset and move to the target directory if needed.
