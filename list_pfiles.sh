@@ -135,6 +135,9 @@ find /product/priv-app/ -type f >>$LOGFILE
 echo "" >>$LOGFILE
 find /data/app/ -type f >>$LOGFILE
 echo "" >>$LOGFILE
+## List OnePlus 'india' directory.
+[ -d /system/india ] && find /system/india/ -type f >>$LOGFILE || echo No india.
+echo "" >>$LOGFILE
 
 # Finish script
 rm $prop_file;
