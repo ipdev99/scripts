@@ -11,59 +11,68 @@ OUT=$TDIR/system
 # # Set alternative directory.
 # OUT=/ip/$NAME
 
-# Set functions
+# Set main functions
 
 convert_image() {
-	echo "Converting" $i "to raw_"$i
-	simg2img $i raw_$i
+	echo "- Sparse image file. -"
+	if [ ! -f raw_$i ]; then 
+	  echo "Converting" $i "to raw_"$i
+	  simg2img $i raw_$i
+	fi
 }
 
-# check_dir() {
-# 	[[ ! -d $OUT ]] && mkdir -p $OUT;
-# 	[[ ! -d $SDIR ]] && mkdir -p $SDIR;
-# }
-
-mount_raw_image() {
-	echo "Mounting "$ii;
-	echo " "$OUT/$ii;
-	#[[ ! -d $OUT ]] && mkdir -p $OUT;
-	# [[ ! -d $OUT/$ii/ ]] && mkdir -p $OUT/$ii;
-	sudo mount -o ro raw_$i $OUT/$ii
+mount_image() {
+	echo "Mounting "$ii
+	echo " "$OUT/$ii
+	sudo mount -o ro $i $OUT/$ii > /dev/null 2>&1
+	if [ $? -ne 0 ]; then
+	  convert_image
+	  sudo mount -o ro raw_$i $OUT/$ii > /dev/null 2>&1
+	  if [ $? -ne 0 ]; then
+	  	echo " ! Error mounting "$ii
+	  fi
+	fi
 }
 
+mount_system() {
+	echo "Mounting "$ii
+	echo " "$OUT
+	[[ ! -d $OUT ]] && mkdir -p $OUT
+	sudo mount -o ro $i $OUT > /dev/null 2>&1
+	if [ $? -ne 0 ]; then
+	  convert_image
+	  sudo mount -o ro raw_$i $OUT > /dev/null 2>&1
+	  if [ $? -ne 0 ]; then
+	  	echo " ! Error mounting "$ii
+	  fi
+	fi
+}
 
 # Lets go.
 
-echo "";
+echo ""
 
-# Convert sparse image file(s) to raw image file(s).
-
-simglist="system.img system_ext.img product.img vendor.img"
-
-for i in $simglist; do
-	if [ -f $i ]; then
-		if [ ! -f raw_$i ]; then
-			convert_image;
-		fi;
-	fi;
-done;
-
-# Mount the raw image file(s).
+# __ Mount the image file(s). __
 
 # Mount system first.
-echo "Mounting system";
-echo " "$OUT;
-[[ ! -d $OUT ]] && mkdir $OUT;
-sudo mount -o ro raw_system.img $OUT;
+for i in system.img; do
+  ii=$(printf "$i" | cut -f1 -d '.')
+  mount_system
+done
+
 
 # Mount the rest.
-rimglist="system_ext.img product.img vendor.img"
+imglist="system_ext.img product.img vendor.img"
 
-for i in $rimglist; do
-	ii=$(printf "$i" | cut -f1 -d '.');
-	mount_raw_image;
-done;
+for i in $imglist; do
+	if [ -f $i ]; then
+		ii=$(printf "$i" | cut -f1 -d '.')
+		mount_image
+	fi
+done
 
+
+# Clean up.
 
 # Done.
 echo ""; echo "Done"; echo "";
