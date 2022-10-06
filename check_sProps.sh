@@ -145,6 +145,7 @@ prop_one_value ro.vendor.build.tags release-keys
 prop_one_value ro.vendor.build.type user
 prop_one_value ro.vendor.warranty_bit 0
 prop_one_value ro.warranty_bit 0
+warn_one_value sys.oem_unlock_allowed 0 ## The toggle under Developer Options.
 prop_two_value vendor.boot.mode normal unknown
 prop_one_value vendor.boot.vbmeta.device_state locked
 prop_one_value vendor.boot.verifiedbootstate green
@@ -157,7 +158,7 @@ echo "Properties of interest."; echo "";
 
 note_prop_value ro.oem.key1
 note_prop_value ro.oem_unlock_supported
-note_prop_value sys.oem_unlock_allowed
+# note_prop_value sys.oem_unlock_allowed
 
 echo ""
 
